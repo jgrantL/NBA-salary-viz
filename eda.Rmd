@@ -1,0 +1,789 @@
+---
+title: "Exploratory Data Analysis (EDA)"
+author: "Jennifer Grant"
+date: "6/24/2020"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(reshape2)
+library(fmsb)
+```
+
+Lets import the NBA dataframe that we put together.
+
+```{r}
+nba = read.csv('../data/clean_data/nba_frame.csv', stringsAsFactors = FALSE) %>% select(!c('X'))
+nba
+```
+
+Where do we even start!? Well, lets just start by looking at how the quantitative features are distributed. We first explore how salary is distributed among teams for each season. 
+
+```{r}
+nba %>% ggplot(aes(total_salaries / 1000000)) + 
+  geom_histogram(bins=10, color='white') + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() +  
+  theme(axis.text.x = element_text(angle=50, hjust=1)) + 
+  xlab('Total Salary (millions)')
+```
+
+There are a couple of interesting details that pop out to me right away. 
+
+1. First thing that I noticed was that there continuously seems to be a couple of teams that have a significantly larger total player salary than the rest for every season from 2009-2019. We will definitely investigate which teams these data points represent. 
+
+2. Next thing that I noticed was that, over time, team salary distributions look much different. In the earlier seasons, team salaries were slight right skewed. We then see a shift toward a more "symmetric" distribution starting in 2013, with a couple outliers. And then as we progress toward 2019, salaries become much larger so the distribution tends to become left skewed. This could be due to inflation and so we will explore that possiblity further along in this analysis.
+
+3. Lastly, this detail ties in with the second observation, but we notice that there are a couple years where some teams are playing their players roughly the same (large median peaks), and other years the peak is much flatter where teams are paying players differently from one another. 
+
+Let's move onto exploring how the min and max salaries of teams have changed over time. Note that the min/max salary column contains the salary of the player that makes the least/most on each team for a given season. 
+
+```{r}
+# starting with min salary
+nba %>% ggplot(aes(min_salary / 1000)) + 
+  geom_histogram(bins=10, color='white') + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() +  
+  theme(axis.text.x = element_text(angle=50, hjust=1)) + 
+  xlab('Minimum Salary (thousands)')
+```
+
+Wow. Interesting how the min salary, while still on the low end, still had some higher observations in earlier seasons. The min salary sees much less variability in recent seasons and remains quite low. There is an interesting case in 2014 where we had more min salaries on the higher end of the payscale. 
+
+Let's switch over to max salaries.
+
+```{r}
+nba %>% ggplot(aes(max_salary/1000000)) + 
+  geom_histogram(bins=10, color='white') + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() +  
+  theme(axis.text.x = element_text(angle=50, hjust=1)) + 
+  xlab('Max Salary (millions)')
+```
+
+Something interesting that we notice of the change in max salary distribution is the transition from the lower end to upper end. Obviously, this can be due to inflation, but we see that the max salary is increasing for most teams over time. We also notice that the max salary semes to generally become more variable over time and that there always seems a couple teams that are on either of the extremes (low end and high end), with maybe an exception in 2012. We will definitely explore these observations further later in this document. 
+
+Let's move to median salary. We expect the median salary to follow a similar but more gradual transition from low end of payscale to upper end. Lets see:)
+
+```{r}
+nba %>% ggplot(aes(median_salary / 1000000)) + 
+  geom_histogram(bins=10, color='white') + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() +  
+  theme(axis.text.x = element_text(angle=50, hjust=1)) + 
+  xlab('Median Salary (millions)')
+```
+
+Interesting. We definitely had the wrong hypothesis - there doesn't appear to be a transition from low end to high end like the min & max salaries. It seems like a lot of teams had similar median salaries in the 2012-2014 seasons, but more variability in the rest. 
+
+Let's move on to total points! I honestly have no idea what this distribution will look like. I would imagine left skewed because basketball games have the potential to accumulate a lot of points for either team. Lets check and see if we are right about that. 
+
+```{r}
+nba %>% ggplot(aes(total_points / 1000)) + 
+  geom_histogram(bins=10, color='white') + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() +  
+  theme(axis.text.x = element_text(angle=50, hjust=1)) + 
+  xlab('Total Points (thousands)')
+```
+
+Well, we definitely see the distribution of total points laying on the higher end of the scale, but I wouldn't necessarily say that our hypothesis was right. I'm actually really surprised to see how little variability there is in points scored by teams!
+
+Lets look at wins and losses. I would expect wins and losses to be normally distributed because some teams tend to win a lot of games while other lose a lot, and then a chunk of teams that lay between the spectrum.
+
+```{r}
+nba %>% ggplot(aes(wins)) + 
+  geom_histogram(bins=10, color='white') + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() +  
+  theme(axis.text.x = element_text(angle=50, hjust=1))
+```
+
+```{r}
+nba %>% ggplot(aes(losses)) + 
+  geom_histogram(bins=10, color='white') + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() +  
+  theme(axis.text.x = element_text(angle=50, hjust=1))
+```
+
+Well, maybe the distributions aren't normal per say, but I think they're fairly symmetric and would look closer to normal if there were more data points. This makes sense because if there are teams dominating wins, there must be some teams dominating losses. What's interesting though is that we see much more variability in team losses than in wins. I'm not sure why that is?
+
+One variable we didn't look at was number of players. Lets explore it for fun. I would expect the distributions to have very little varibility and a tall peak. 
+
+```{r}
+nba %>% ggplot(aes(num_players)) + 
+  geom_histogram(bins=10, color='white') + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() +  
+  theme(axis.text.x = element_text(angle=50, hjust=1)) + 
+  xlab('Number of Players')
+```
+
+Oh wow. We were completely wrong! There is a relatively good amount of variability, with some high peaks. But what's interesting is the transition from the left end of the spectrum to the right. Teams are accumulating more players. This may affect our questions regarding teams with higher salaries and will look into which players to consider (we noticed some of the min salaries were $0)
+
+NOTE: We went back and excluded players with $0 salaries, which reduced the number of players on the roster - see explanation in code for building the NBA dataframe.
+
+Before we move onto our hypothesis questions, lets check out one last feautre: total team experience. We plot the distribution of experience below.
+
+```{r}
+nba %>% ggplot(aes(total_experience)) + 
+  geom_histogram(bins=10, color='white') + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() +  
+  theme(axis.text.x = element_text(angle=50, hjust=1)) + 
+  xlab('Total Experience (years)')
+```
+
+A couple interesting distributions in seasons 2011 and 2017 with teams having significantly higher combined experience than the rest of the league. It is likely that these teams had more veteran players, which could possible explain the existence of these extremes,. We also see that in 2019 the variability in combined team experience is much lower than in most other seasons.
+
+Now we move onto exploring some questions we had before starting this project. These questions are:
+
+1. Do teams with high salaries tend to win more games?
+
+2. Do teams with younger, less experiences players tend to have lower salaries?
+
+3. How have team salaries changed over the last ten seasons? Very rapidly? Remained somewhat constant? Or decreased?
+
+4. If team salaries have increased, have they increased at the same rate for all teams?
+
+####Total Salary and Wins
+
+Let's start with the first question. In order to answer this, we will need access to the features 'salary' and 'wins' from of our NBA dataframe. We will use these features to build a scatterplot and then plot a regression line to determine whether the features are correlated. 
+
+```{r}
+nba %>% ggplot(aes(x=wins, y=total_salaries / 1000000)) + 
+  geom_point()  + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() + 
+  ylab('Total Salary (millions)') + 
+  xlab('Wins') + 
+  geom_smooth(method='lm', se=FALSE, formula=y~x)
+```
+
+Although the regression lines for each season have positive slopes (barely for 2014), there doesn't seem to be a strong correlation between salary and wins by looking at the slope of the lines. The only season where there seems to be a moderate correlation is in 2018. We compute the correlation coefficient $R^{2}$ between total salaries and wins for each season and display below in the form of a dataframe. 
+
+```{r}
+#' @title Seasonal R_squared
+#' @description given two different feature labels, computes the correlation coefficient for all seasons between the years 2010-2019
+#' @param y_label is the label of the feature on the y_axis
+#' @param x_label is the label of the feautre on the x_axis
+#' @output vector of correlation coefficients between labels for seasons 2010-2019
+seasonal_rsquared <- function(y_label, x_label) {
+  #build a sequence that will help us navigate the dataframe by season
+  season_starts <- seq(1, 300, 30)
+  
+  #initialize a vector to hold all ten season r_squared values
+  r_squares <- c()
+  
+  #compute and collect seasonal r_squared values
+  for (i in season_starts) {
+    r_square <- summary(lm(nba[y_label][i:(i+29), ]~nba[x_label][i:(i+29), ]))$r.squared
+    r_squares <- c(r_squares, r_square)
+  }
+  
+  return(r_squares)
+}
+```
+
+```{r}
+#lets call the function we created above to compute our seasonal r_squared values
+r_squares <- seasonal_rsquared('total_salaries', 'wins')
+
+#lets build a dataframe to hold the correlation coefficients for each season
+seasons <- 2010:2019
+r_squared <- data.frame(seasons, r_squares)
+colnames(r_squared) <- c('season', 'r_square')
+r_squared
+```
+
+We can see by the correlation coefficients that there is a very low correlation between the two features, with the highest being in the 2018 season as evidenced by the plot above. I would have expected to see a higher correlation coefficient between higher salaries and won games, so this is an interesting find. 
+
+Let's look at another non-linear curve to plot on our data - a loess curve. A [loess curve](https://en.wikipedia.org/wiki/Local_regression) is a localized polynomial regression curve built from partitioning the data. Let's see if we can find a more localized trend between games won and team salary.
+
+```{r}
+nba %>% ggplot(aes(x=wins, y=total_salaries / 1000000)) + 
+  geom_point()  + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() + 
+  ylab('Total Salary (millions)') + 
+  xlab('Wins') + 
+  geom_smooth(method='loess', se=FALSE, formula=y~x)
+```
+
+In a more localized analysis, we can see that in general there is an upward trend between games won and team salary. However, it's still not as positive as I thought it would be. We notice that in the most recent season of 2018-2019 that teams with the most wins have team salaries not much different than those with the least amount of wins. 
+
+####Total Salary and Experience
+
+We move on to the next question - do teams with younger, less experienced players tend to have lower salaries. We grab these attributes and plot them by season below.
+
+```{r}
+nba %>% ggplot(aes(x=total_experience, y=total_salaries / 1000000)) + 
+  geom_point()  + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() + 
+  ylab('Total Salary (millions)') + 
+  xlab('Total Experience (years)') + 
+  geom_smooth(method='lm', se=FALSE) 
+```
+
+We can definitely see from this plot that there's a positive association between total experience of a team and total salary of a team. To answer our original question, we do see that teams with less experienced players tend to have lower team salaries. We compute the correlation coefficients and display them in a dataframe below.
+
+```{r}
+#lets call the function we created above to compute our seasonal r_squared values
+r_squares <- seasonal_rsquared('total_salaries', 'total_experience')
+
+#lets build a dataframe to hold the correlation coefficients for each season
+seasons <- 2010:2019
+r_squared <- data.frame(seasons, r_squares)
+colnames(r_squared) <- c('season', 'r_square')
+r_squared
+```
+
+We see some higher correlation coefficients between total salary and total experience than total salary and wins. Notably, season 2014 has an $R^{2}$ value close to 0.6.
+
+Let's explore a loess curve here as well. 
+
+```{r}
+nba %>% ggplot(aes(x=total_experience, y=total_salaries / 1000000)) + 
+  geom_point()  + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() + 
+  ylab('Total Salary (millions)') + 
+  xlab('Total Experience (years)') + 
+  geom_smooth(method='loess', se=FALSE) 
+```
+
+We see the same strong positive relationship in 2014 between total experience and team salary. In general, we do see a positive relationship between the two features, but looking at a more localized trend we can see that in most seasons there are a couple teams (data points) in the highest end of the experience spectrum having a lower team salary than those data points before it, changing the concavity downward. 
+
+####Total Experience and Team Wins
+
+This is a bit off track, but since we saw positive relationships between total salary and wins & total salary and experience, we explore the relationship between wins and experience. We expect this relationship to also follow a positive trend based on the plots above. 
+
+```{r}
+nba %>% ggplot(aes(x=total_experience, y=wins)) + 
+  geom_point()  + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() + 
+  ylab('Wins') + 
+  xlab('Total Experience (years)') + 
+  geom_smooth(method='loess', se=FALSE) 
+```
+
+We generally see a positive relationship between total experience and games won, however starting in 2016 there seems to be a range of experience (60-80years) that tens to correlate with a dip in wins. Interesting!
+
+####Salary change through time
+
+Our next hypothesis question is regarding salary changes through time. How have team salaries changed over time? Increased? Decreased? How rapid is this increase/decrease and is it the same trend for all teams? In order to answer this question we need to compute the change in salary for teams over ten seasons. 
+
+First, lets look at how salarieschanged for each team over the last ten seasons.
+
+```{r fig.width = 10,fig.height = 4}
+nba %>% ggplot(aes(x=season, y=total_salaries / 1000000)) + 
+  geom_line() + 
+  geom_point(aes(x=season, y=total_salaries/ 1000000)) + 
+  facet_wrap(~team) + 
+  theme_bw() + 
+  ylab('Total Salary (millions)') + 
+  scale_x_continuous(breaks=2010:2019)
+```
+
+We can see an overall upward trend throughout the last ten seasons for all teams. Some experience more turbulance than others, like the Toronto Raptors & the Portland Trail Blazers, but it seems that salaries have increased in time for all teams. 
+
+One thing we notice is that before the 2014 & 2015 seasons growth/depression in team salaries was small, but beyond these seasons team salaries grow/fall at a more drastic rate. We would need to explore more historical data going back beyond 2009 to determine whether this change in salary is unique and deserves some contextual research - increase of salary cap? increase in number of players? Let's quickly look at how number of players for each team has changed over time because this could be an explanation. We do this below.
+
+```{r fig.width = 10,fig.height = 4}
+nba %>% ggplot(aes(x=season, y=num_players)) + 
+  geom_line() +
+  geom_point(aes(x=season, y=num_players)) +
+  facet_wrap(~team) +
+  theme_bw() + 
+  ylab('number of players') +
+  scale_x_continuous(breaks=2010:2019)
+```
+
+Looking at these plots we do see higher numbers of players in seasons beyond 2014 & 2015, but we cannot say for certain that this explains the trend in salaries above. For example, look at the Miami dolphins in the previous plot - a huge growth in team salary beyond 2015 but we don't see such a drastic change in number of players. This upward trend in salaries in later seasons could be dependent on number of players for some teams, but not for others. 
+
+Before we move on, we acknowledge that the general upward trend in team salaries over time could be due to inflation. In order to adjust for inflation we need to pick a year that we will compare all salaries to - we choose the first season 2009-2010. So, we will use a tool called the [Consumer Price Index (CPI)](https://www.usinflationcalculator.com/inflation/consumer-price-index-and-annual-percent-changes-from-1913-to-2008/) to translate all salaries into 2010 dollars (year the season finished). We will then be able to compare the true, raw change (or best that we can get) in salary because we've factored out inflation. We use the following conversion: $$Salary_{year} \cdot \frac{CPI_{2010}}{CPI_{year}}$$. This equation gives us what we need, namely the salary for a given year in terms of 2010 dollars. We create a function that, when given a column of salaries, converts the salaries to 2010 dollars.
+
+```{r}
+#' @tital Adjust Income
+#' @description converts a given vector of salaries for a given year into 2010 dollars
+#' @param salary vector of salaries for the same year
+#' @param year_CPI is a double that represents the average Consumer Price Index for year of salary
+#' @output returns the vector of salaries in terms of 2010 dollars
+adjust_income = function(salary, year_CPI) {
+  CPI_2010 = 218.056
+  adjusted_salary = salary * (CPI_2010 / year_CPI)
+  
+  return(adjusted_salary)
+}
+```
+
+We will now use this function to add a new salary feature that has been adjust for inflation. We do this below.
+
+```{r}
+#initialize a vector that will hold all of our new adjusted salaries
+adjusted_salaries <- c()
+
+#vector of seasons for which we need to adjust their salaries
+seasons_to_adjust <- 2011:2019
+
+#since we aren't adjusting 2010 since we are considering that our base
+# in this analysis, we need to add these values to our adjusted salaries
+# because we will be adding this as a feature to our dataframe
+salaries_2010 <- nba[nba['season'] == 2010, ][['total_salaries']]
+adjusted_salaries <- c(adjusted_salaries, salaries_2010)
+
+# initialize a vector that holds average yearly CPI values from website linked above
+# for the years 2011-2019
+yearly_CPI <- c(224.939, 229.594, 232.957, 236.736, 237.017, 240.007, 245.120, 251.107, 255.657)
+
+#now lets adjust all the other seasons down to our base dollars
+for (i in 1:length(seasons_to_adjust)) {
+  this_season <- nba[nba['season'] == seasons_to_adjust[i], ]
+  this_season_salaries <- this_season[['total_salaries']]
+  adjusted_salaries <- c(adjusted_salaries, adjust_income(this_season_salaries, yearly_CPI[i]))
+}
+
+#add feature to nba dataframe
+nba['adjusted_salaries'] <- adjusted_salaries
+```
+
+Now that we've made this adjustment, lets create the same plot as above but with the adjusted salary feature.
+
+```{r fig.width = 10,fig.height = 4}
+nba %>% ggplot(aes(x=season, y=adjusted_salaries / 1000000)) + 
+  geom_line() + 
+  geom_point(aes(x=season, y=adjusted_salaries/ 1000000)) + 
+  facet_wrap(~team) + 
+  theme_bw() + 
+  ylab('Total Salary (millions)') + 
+  scale_x_continuous(breaks=2011:2019)
+```
+
+Interesting, the general trends and features of the plots don't change much. Lets quickly take a side note and explore how the distribution of salaries have changed over time given our new adjusted salaries. 
+
+```{r}
+nba %>% ggplot(aes(total_salaries / 1000000)) + 
+  geom_density(color='blue') + 
+  geom_density(aes(adjusted_salaries / 1000000), color='red') + 
+  facet_wrap(~season, nrow=2) + 
+  theme_bw() +  
+  theme(axis.text.x = element_text(angle=50, hjust=1)) + 
+  xlab('Total Salary (millions)') + 
+  labs(title='Distribution of Salaries both Adjusted and not Adjusted for Inflation') 
+```
+
+Our adjustment definitely worked. We can see that the non-adjusted salaries in blue are scaled back a bit when adjusted (red density curves).
+
+Below contains some code that explores how to compare relative changes in team salaries. I am still working on a good visual that will enable a viewer to make a clear comparison. 
+
+```{r}
+#lets initialize a named list that will hold our salary differences for each season
+# where each elemnnt represents a team's difference in alphabetical order (same order as nba dataframe)
+salary_diff = vector(mode='list', length=9)
+
+#will need to access team names in one loop below
+team_names = unique(nba$team)
+
+#season differences
+season_diff = 2011:2019
+
+#assign the season differences as the names for our list (will help with plotting)
+names(salary_diff) = season_diff
+
+for (season in season_diff) {
+  salary_diff[toString(season)] = list(rep(0, 30))
+}
+
+#lets loop through the teams to get salary differences
+for (season in season_diff) {
+  i = 1
+  for (team in team_names) {
+    previous_year = nba[nba['team'] == team & nba['season'] == season - 1, ]$adjusted_salaries
+    this_year = nba[nba['team'] == team & nba['season'] == season, ]$adjusted_salaries
+    salary_diff[[toString(season)]][i] = (this_year - previous_year) / previous_year
+    i = i + 1
+  }
+}
+
+salary_diff_df = data.frame(salary_diff)
+names(salary_diff_df) = season_diff
+salary_diff_df['team'] = team_names
+salary_diff_df 
+```
+```{r}
+salary_diff_minus_team = salary_diff_df %>% select(-team)
+stars(salary_diff_minus_team, main='Relative Change in NBA Team Salary 2009-2019')
+```
+
+
+```{r}
+#named list that will hold our percent change over the ten seasons for each team
+percent_change = vector(mode='list', length = 30)
+
+#initialize vector of team names so we can use as names for list above
+team_names = unique(nba$team)
+
+#assign list names
+names(percent_change) = team_names
+
+#compute the percent salary change for each team over the seasons 2010-2019
+for (team in team_names) {
+  #calculate the difference in season salaries for given team
+  diff_season_sal = diff(nba[nba['team'] == team, ][['adjusted_salaries']])
+  
+  #grabs previous year salaries to divide by the difference taken above in 
+  # order to convert from just difference to percent change
+  season_sals_for_denominator = nba[nba['team'] == team, ][['adjusted_salaries']][1:9]
+  
+  #makes conversion for team
+  team_percent_change = (diff_season_sal / season_sals_for_denominator) * 100
+  
+  #assigns this vector to team in list
+  percent_change[[team]] = team_percent_change
+}
+
+#turn list into dataframe so we can look at it and plot
+sal_diff = data.frame(percent_change)
+
+#add seasonal change to help with plotting
+sal_diff['season'] = as.character(2011:2019)
+sal_diff
+```
+
+
+```{r, fig.height=5, fig.width=5}
+melted_frame = melt(sal_diff, id.vars='season')
+plot = ggplot()
+ggplot(data=melted_frame, aes(x=as.integer(season), y=value, col=variable)) + geom_line()
+```
+
+
+```{r}
+#need to build column for season
+seasons = rep(season_diff, each=length(team_names))
+
+#need column for team name
+teams = rep(team_names, times=length(season_diff))
+
+#will hold the column of percent changes
+percent_changes = c()
+
+#gather percent changes from our named list
+for (year in season_diff) {
+  percent_changes = c(percent_changes, salary_diff[[toString(year)]])
+}
+```
+
+```{r}
+#now we can build our dataframe with these vectors
+salary_change = data.frame(seasons, teams, percent_changes)
+names(salary_change) = c('season', 'team', 'percent_change')
+salary_change
+```
+
+```{r}
+#lets use melt to be able to plot percent changes over seasons for each team
+melt(salary_change, id.vars='season')
+```
+
+
+```{r}
+#lets plot them now
+sal_diff[c('season', 'ATL')] %>% ggplot(aes(x=season, y=ATL)) + geom_bar(stat='identity', color='white', fill='#000080') + theme_bw() + 
+    ylab('Season') + xlab('% change') + labs(title='ATL Percent Salary Change', subtitle='Seasons considered: 2010-2019')
+```
+
+
+### Shiny App
+
+Below is our code for Shiny App plots!
+
+The goal of this project is to use visualizations as an aid in answering hypothesis questions, but to also produce interactive web visualizations. Our first Shiny App plot will be a barplot that displays each team's salary (in descending or ascending order) for a given season (user input). For more up-to-date code on all Shiny App visualizations, check out the additional R scripts that contain the final code used to generate them.
+
+```{r}
+#barplot of salaries by team for one season - will be used in shiny app plot
+
+#lets consider the first season
+season = 2010
+this_season = nba[nba['season'] == season, ]
+
+#need stats for adjusted salaries
+stats = summary(this_season[['adjusted_salaries']]) / 1000000
+mean_salary = stats[4]
+median_salary = stats[3]
+first_quartile = stats[2]
+third_quartile = stats[5]
+
+#lets plot
+this_season %>% ggplot(aes(x=team, y=sort(adjusted_salaries / 1000000, decreasing=FALSE))) + geom_bar(stat='identity') + geom_hline(yintercept = mean_salary, color='blue') + geom_hline(yintercept= median_salary, color='red') + geom_hline(yintercept = first_quartile, linetype='dashed') + geom_hline(yintercept = third_quartile, linetype='dashed') + coord_flip() + ylab('Team Salaries (millions)') + labs(title='NBA Teams Ranked by Salary', subtitle='Salaries for 2010 season') + theme_bw() + theme(plot.title = element_text(hjust = 0.5, size=13, face='bold'), plot.subtitle=element_text(size=8, hjust=0.5, face='italic'), panel.border=element_blank(),  axis.text=element_text(size=8), axis.title=element_text(size=9)) 
+```
+
+Our second Shiny App visualization is a line plot that shows a team's salary over seasons 2009-2019 against teams with the highest and lowest salaries of each season. Again, check out the additional R scripts that contain the final code that generated the actual plots online. 
+
+```{r}
+#line plot of change in salary, including change of max and min salaries, for each team over time
+
+## NEED TO ADJUST MIN AND MAX SALARIES BASED ON INFLATION
+
+#initialize vectors to hold our new adjusted min & max salaries
+adjusted_max_salaries = c()
+adjusted_min_salaries = c()
+
+#since we aren't adjusting 2010 since we are considering that our base
+# in this analysis, we need to add these values to our adjusted min & max salaries
+# because we will be adding this as a feature to our dataframe
+max_salaries_2010 = nba[nba['season'] == 2010, ][['max_salary']]
+min_salaries_2010 = nba[nba['season'] == 2010, ][['min_salary']]
+
+adjusted_max_salaries = c(adjusted_max_salaries, max_salaries_2010)
+adjusted_min_salaries = c(adjusted_min_salaries, min_salaries_2010)
+
+#now lets adjust all the other seasons down to our base dollars
+for (i in 1:length(seasons_to_adjust)) {
+  this_season = nba[nba['season'] == seasons_to_adjust[i], ]
+  this_season_max_salaries = this_season[['max_salary']]
+  this_season_min_salaries = this_season[['min_salary']]
+  adjusted_max_salaries = c(adjusted_max_salaries, adjust_income(this_season_max_salaries, yearly_CPI[i]))
+  adjusted_min_salaries = c(adjusted_min_salaries, adjust_income(this_season_min_salaries, yearly_CPI[i]))
+}
+
+#add new features to nba dataframe
+nba['adjusted_max_salary'] = adjusted_max_salaries
+nba['adjusted_min_salary'] = adjusted_min_salaries
+
+####DONE ADJUSTED MIN AND MAX SALARIES
+
+#lets consider the first team, Atlanta
+team = nba[nba['team'] == 'ATL', ]
+
+
+min_by_season = nba %>% group_by(season) %>% summarise('min'=min(adjusted_salaries))
+max_by_season = nba %>% group_by(season) %>% summarise('max'=max(adjusted_salaries))
+```
+
+
+```{r}
+team_abbrev = unique(nba[['team']])
+labels = mapping('WAS')
+team_name = labels[1]
+max_x = as.numeric(labels[2])
+max_y = as.numeric(labels[3])
+team_x = as.numeric(labels[4])
+team_y = as.numeric(labels[5])
+min_x = as.numeric(labels[6])
+min_y = as.numeric(labels[7])
+
+#now that we have team name and coordinates for all labels, we plot
+ggplot() + geom_line(data=team, aes(x=season, y=adjusted_salaries / 1000000)) + 
+  geom_line(data=min_by_season, aes(x=season, y=min / 1000000), color='red') + theme_bw() + ylab('Total Salary (millions)')  + 
+  geom_line(data=max_by_season, aes(x=season, y=max / 1000000), color='blue') + theme_bw() + ylab('Total Salary (millions)') + scale_x_continuous(breaks=2011:2019) +
+   labs(title=paste0('Comparing ', team_name, "'s Salary"), subtitle="Comparisons are done for seasons 2010-1019 with teams having the lowest/highest salaries for that season") + theme(plot.title = element_text(hjust = 0.5, size=13, face='bold'), plot.subtitle=element_text(size=8, hjust=0.5, face='italic'), panel.border=element_blank(),  axis.text=element_text(size=8), axis.title=element_text(size=9)) +
+  geom_text(aes(x = max_x, y = max_y, label = "Season Max Salary"), size=2.5) +
+  geom_text(aes(x = team_x, y = team_y, label = team_name), size=2.5) + 
+  geom_text(aes(x = min_x, y = min_y, label = "Season Min Salary"), size=2.5)
+```
+
+
+```{r}
+#' @title Mapping
+#' @description given an NBA team name abbreviation, returns team name and (x,y) tuples of where labels should be placed on graph
+#' @param team_abbrev three-letter NBA team abbreviation
+#' @output returns a list whose elements are: more detailed team name, tuple of max salary label, tuple of team name label, tuple of min salary label
+mapping <- function(team_abbrev) {
+  if (team_abbrev == 'ATL') {
+    team_name = 'Atlanta'
+  }
+  else if (team_abbrev == 'BOS') {
+    team_name = 'Boston'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 98)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'BRK') {
+    team_name = 'Brooklyn'
+  }
+  else if (team_abbrev == 'CHI') {
+    team_name = 'Chicago'
+  }
+  else if (team_abbrev == 'CHO') {
+    team_name = 'Charlotte'
+  } 
+  else if (team_abbrev == 'CLE') {
+    team_name = 'Cleveland'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 105)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'DAL') {
+    team_name = 'Dallas'
+    min_label = c(2018.5, 72)
+    team_label = c(2018, 85)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'DEN') {
+    team_name = 'Denver'
+  }
+  else if (team_abbrev == 'DET') {
+    team_name = 'Detroit'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 100)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'GSW') {
+    team_name = 'Golden State'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 115)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'HOU') {
+    team_name = 'Houston'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 100)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'IND') {
+    team_name = 'Indiana'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 100)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'LAC') {
+    team_name = 'L.A Clippers'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 97)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'LAL') {
+    team_name = 'L.A Lakers'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 95)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'MEM') {
+    team_name = 'Memphis'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 95)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'MIA') {
+    team_name = 'Miami'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 115)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'MIL') {
+    team_name = 'Milwaukee'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 97)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'MIN') {
+    team_name = 'Minnesota'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 90)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'NOP') {
+    team_name = 'New Orleans'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 95)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'NYK') {
+    team_name = 'New York'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 91)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'OKC') {
+    team_name = 'Oklahoma'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 115)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'ORL') {
+    team_name = 'Orlando'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 96)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'PHI') {
+    team_name = 'Philadelphia'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 100)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'PHO') {
+    team_name = 'Phoenix'
+  }
+  else if (team_abbrev == 'POR') {
+    team_name = 'Portland'
+  }
+  else if (team_abbrev == 'SAC') {
+    team_name = 'Sacramento'
+  }
+  else if (team_abbrev == 'SAS') {
+    team_name = 'San Antonio'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 95)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'TOR') {
+    team_name = 'Toronto'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 100)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else if (team_abbrev == 'UTA') {
+    team_name = 'Utah'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 91)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  else {
+    team_name = 'Washington'
+    min_label = c(2018.5, 72)
+    team_label = c(2018.5, 100)
+    max_label = c(2017.75, 125)
+    return(c(team_name, max_label, team_label, min_label))
+  }
+  
+  min_label = c(2018.5, 72)
+  team_label = c(2018.25, 91)
+  max_label = c(2017.75, 125)
+  
+  return(c(team_name, max_label, team_label, min_label))
+}
+```
+
+Lets save our updated dataframe with adjusted salaries, min, and max. 
+
+```{r}
+write.csv(nba, '../data/clean_data/adjusted_nba_frame.csv')
+```
