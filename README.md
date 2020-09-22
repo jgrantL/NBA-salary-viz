@@ -1,6 +1,6 @@
-# NBA-salary-viz
+# NBA Salary - A mini-analysis
 
-Welcome to my mini-analysis summer project working with NBA data!
+Welcome to my fun summer project working with NBA data!
 
 ## Introduction
 
