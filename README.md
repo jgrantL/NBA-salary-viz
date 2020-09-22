@@ -20,7 +20,7 @@ All data for this project came from an online website called [Basketball Referen
 
 ## Video
 
-Check out the [video]() I made which quickly explains my project and walks a user through my web visualizations.
+Check out the [video](https://www.youtube.com/watch?v=hsHwMV5i2gM) I made which quickly explains my project and walks a user through my web visualizations.
 
 ## Acknowledgement
 
