@@ -10,7 +10,7 @@ There are many steps taken in the data science lifecycle before ever getting to 
 
 - Code: This directory contains a series of R scripts and R markdown files used to acquire my data, merge relevent features, explore the data while answering some hypothesis questions, and code for building my published Shiny App web visualizations.
 
-- Report: This directory contains all the files needed to run my final "blog post" style report. You can go directly to the blog post [here]().
+- Report: This directory contains all the files needed to run my final "blog post" style report. You can go directly to the blog post [here](https://jgrantl.github.io/nba_report_final.html).
 
 - Data: This directory contains one file - my final, clean data frame used for exploratory data analysis.
 
