@@ -8,7 +8,7 @@ There are many steps taken in the data science lifecycle before ever getting to 
 
 ## Repo Breakdown
 
-- Code: This directory contains a series of R scripts and R markdown files used to acquire my data, merge relevent features, explore the data while answering some hypothesis questions, and code for building my published Shiny App web visualizations.
+- Code: This directory contains a series of R scripts and R markdown files used to acquire my data, merge relevent features, explore the data while answering some hypothesis questions, and code for building my published Shiny App web visualizations ([here](https://jenny-projects.shinyapps.io/NBA-barplot/?_ga=2.210032533.1010722830.1601592755-637606031.1596648902) & [here](https://jenny-projects.shinyapps.io/NBA-lineplot/?_ga=2.210032533.1010722830.1601592755-637606031.1596648902) :) ).
 
 - Report: This directory contains the raw Rmd file and a subdirectory that contains all the files needed to run my final "blog post" report. You can go directly to the blog post [here](https://jgrantl.github.io/nba_report_final.html).
 
