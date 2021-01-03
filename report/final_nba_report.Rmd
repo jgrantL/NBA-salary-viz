@@ -36,33 +36,39 @@ library(dplyr)
 
 
 I graduated from UC Berkeley in May of 2020 with an undergraduate degree in Applied <br>
-Mathematics. What an interesting time to be sent off into the world - during a global <br> pandemic! One lesson I've discovered early on in post-graduation is that having a degree <br> opens doors, but whether or not you're chosen to step through one is dependent upon the projects you work on. Projects **outside of classwork** are your opportunity to show a potential employer that you are interested in their work, and have put thought into their business problems/research questions. I go out of my way to bold **outside of classwork** because you'd chuckle if you compared your resume with your peers. You'll see that all of you write about the exact same class projects. Luckily, with data science, working on your own passions project is easier than ever before because there is good quality data availabe conveniently online. I know, I know - where do you even begin when working on a solo project!? I worked on a data science project this summer that I hope can give future employers a glimpse at my ability to work through the data science lifecycle, and to showcase my coding style. I share my experience with you so that you can see, as a student with limited experience, how you can easily use the tools learnt in class to expand your portfolio to prep for a post-graduation world.
+Mathematics. What an interesting time to be sent off into the world - during a global <br> pandemic! One lesson I've discovered early on in post-graduation is that having a degree <br> opens doors, but whether or not you're chosen to step through one is dependent upon the projects you take up. 
+
+Projects **outside of classwork** provide an opportunity to show  potential employers that you are interested in their work and have put thought into their business problems/research questions. I go out of my way to bold **outside of classwork** because you'd chuckle if you were to compare your resume with peers - you all write about the exact same class projects! Luckily, with data science, working on your own solo (or not) project is easier than ever before because of the abundance of quality data online. 
+
+I know, I know - where do you even begin when working on a solo project!? I worked on a data science project this summer that I hope can give future employers a glimpse at my curiosity around working with data. I share my experience working through the data science lifecycle with you so that you can see how easy it is to use tools and content from class to expand your portfolio and prep for a post-graduation world.
 
 #### Project Introduction
 
-Althought I graduated from Berkeley, I haven't always lived in the bay area. Before Berkeley I lived in San Diego for 6 years, and during my time there I got to experience what I call "football frenzy". I'm used to die-hard sports fans - I'm from Canada and Canadians LOVE their hockey. But I just didn't know enough about football to get involved, and I'm trying to make more of an effort to become part of the sports culture in the United States. 
+Before Berkeley I lived in San Diego for 6 years and got to experience what I call "football frenzy". I don't know much about football and at the time I didn't make much of an effort to learn, so I'm trying to turn a new leaf in northern California by diving into the dominant sports culuture here - basketball. 
 
-What's different about the sports culture in northern California, at least from my perspective, is that people are more into basketball. Maybe because there is a top team in the bay area (Golden State Warriors)? I don't know - but what I do know is that Basketball is so embedded into the Bay Area culture that if you take any data science class at UC Berkeley, you'll almost certainly work with/talk about NBA datasets. So, after my junior year at Berkeley I knew that I needed to drink the NBA kool-aide, and this project is an extension of my kool-aide-drinking epiphany. I'll be working with NBA data spanning ten seasons (2009-2019) and focusing on hypothesis questions about how salaries relate to team performance. The questions I'm asking in this project are:
+Basketball is so embedded in the Bay Area culture that if you take any data science class at UC Berkeley, you'll almost certainly work with/talk about NBA datasets. So, after my junior year at Berkeley I knew that I needed to drink the NBA kool-aide so-to-speak, and this project is an extension of my kool-aide-drinking epiphany. I'll be working with NBA data spanning ten seasons (2009-2019) and focus on answering hypothesis questions about how team salary relates to team performance. The questions I'm asking in this project are:
 
 1. Do teams with high salaries tend to win more games?
 
 2. Do teams with younger, less experiences players tend to have lower salaries?
 
-3. How have team salaries changed over the last ten seasons? Very rapidly? Remained somewhat constant? Or decreased?
+3. How have team salaries changed over the last ten seasons? Very rapidly? Remained somewhat constant? Increased? Decreased?
 
-I share my code and experience working through the data science lifecycle, from data aquisition to data cleaning to data exploration to published visualizations using R's incredible Shiny App package. I also have a video [here](https://youtu.be/hsHwMV5i2gM) you can watch that introduces my project, my data source, my Shiny App code, and my final published Shiny App visualizations. So strap in and let's begin!
+I share my code and personal experience working through the data science lifecycle, from data aquisition to data cleaning to data exploration to published visualizations online. I used R's Shiny App to publish my visualizations and highly recommend the package as it's easy to use. I also have a video [here](https://youtu.be/hsHwMV5i2gM) you can watch that introduces my project, my data source, my Shiny App code, and my final published visualizations. 
+
+Strap in and let's begin!
 
 #### Data Prep
 
-In my opinion, there are two main stages of prepping data: acquiring your data & cleaning your data for future analysis. I used to think that acquiring data from online sources was a bit scary, but once you do it a couple times you start to become more comfortable with the process. I do my best in this project to explain and show my code for each step to provide more guidance. Alright, Let's dive in!
+In my opinion, there are two main stages in prepping data: acquiring & cleaning for future analysis. I used to think that acquiring data from online sources was a bit scary, but once you do it a couple times you start to become more comfortable with the process. I do my best in this project to explain and show my code for each step so as to provide more guidance. 
 
 ###### Data Acquisition
 
-The challenge around any data project is finding your data source. Sometimes this part will actually dictate what kind of project you end up choosing. Luckily, with sports, there is a plethora of sources for game/team data. All of my data comes from [Basketball Reference](https://www.basketball-reference.com/), a great source for any team-related data and statistics. 
+The challenge around any data project is finding your data source. Sometimes this part will actually dictate what kind of project you end up choosing. Luckily, with sports, there is a plethora of sources for game/team data. All of my data comes from [Basketball Reference](https://www.basketball-reference.com/), a great source for any team-related statistics and data. 
 
-Now that I know where my data is going to come from, the next step is usually figuring out how to ingest that data, whether through scraping a webpage directly or by download some sort of data file like a csv (**c**omma **s**eparated **v**alues). It's during this step that you need to reflect on how to keep your data files **organized**! This may seem irrelevent for small projects, and I've definitely gotten away without doing so, but once you start working on more complex projects you'll quickly find that keeping your files organized is imperative for your sanity. 
+Once you know where the data will come from, the next step is usually figuring out how to ingest that data, whether through scraping a webpage directly or by downloading some sort of data file like a csv file (**c**omma **s**eparated **v**alues). It's during this step that you need to reflect on how to keep your data files **organized**! This may seem irrelevent for small projects, and I've definitely gotten away without doing so, but once you start working on more complex projects you tend to learn fast that keeping your files organized is imperative for your sanity. 
 
-Staying organized is a habit, so my advice is to start early and often, so practice file organization even for small projects. Since my project will be asking questions around salary for ten seasons (2009-2019), where each year contains data for 30 times, staying organized with my files is going to be really important. Below I'm sharing a rough diagram of how I usually choose to keep my files organized for a larger project, so feel free to use the same schematic for yours! 
+Below I'm sharing a rough diagram of how I usually choose to keep my files organized for a larger project, so feel free to use the same schematic in yours! 
 
 ```{r, echo=FALSE, eval=FALSE}
 DiagrammeR::grViz("digraph {
@@ -99,7 +105,7 @@ knitr::include_graphics("file_structure.png")
 ```
 
 
-Now that I have my file schematic, let's talk about Hypertext Markup Language (HTML) files. HTML is the language used in documents that makeup a webpage. Since I'm working with online data (and maybe you too), it's important to get comfortable with how data is formatted online using html files. Figure 1 below shows an example html file for the Toronto Raptors' homepage on Basketball Reference. If you want to look at a webpage's html file on a Mac, just hold control as you click anywhere on the page and select *View Page Source*. With a quick google search you can find the same operation for Windows.
+Before I talk about how I acquired my data for the project, let's quickly talk about Hypertext Markup Language (HTML) files. HTML is the language used in documents that makeup a webpage. Since I'm working with online data (and maybe you too), it's important to get comfortable with how data is formatted online. Figure 1 below shows a snapshot of an HTML file for the Toronto Raptors' homepage on Basketball Reference. If you want to look at a webpage's html file on a Mac, just hold control as you click anywhere on the page and select *View Page Source*. With a quick google search you can find the same operation for Windows.
 
 
 ```{r html_example, echo=FALSE, fig.align='center', fig.cap="Figure 1 - Example HTML page from Basketball Reference under Toronto Raptors team statistics", out.width = '50%', out.height='50%'}
@@ -107,7 +113,9 @@ knitr::include_graphics("html_example.png")
 ```
 
 
-I decided to actually downloaded the html files that make up each team's homepage on Basketball Reference and saved them on my local laptop. I did this because I knew that I would need data from multiple tables on each team's homepage and I don't want to overwhelm the website with data requests (yes, you can crash a website for sending too many requests, which can come along with legal trouble!!). Downloading HTML pages from the web is quite easy! Once I found the common pattern emerging from all the urls, it's easy to download each file with a basic for-loop. Can you see the pattern from the sample urls below?
+For my project, I decided to downloaded the HTML files that make up each team's homepage on the Basketball Reference website, and saved them on my local laptop. I decided to do this because I knew I would need data from multiple tables on each team's homepage and didn't want to overwhelm the website with data requests (yes, you can crash a website for sending too many requests, which can come along with legal trouble!!). 
+
+Downloading HTML pages from the web is quite easy! It's about finding the common pattern between each url. Can you see the pattern from the sample urls below?
 
  <center>
 https://www.basketball-reference.com/teams/TOR/2010.html \
@@ -116,7 +124,9 @@ https://www.basketball-reference.com/teams/GSW/2012.html \
 
 </center>
 
-They're basically the same, except for the team abbreviation and season. Easy for-loop material! I share all of my code below so that you can possibly do this with your own project. If you're not familiar with R base utilities, I use both *dir.exist* and *dir.create* to check whether a folder first exists on my local laptop (dir=directory=folder) before creating it, and I use *download.file* to download the html file to a folder on my laptop (destfile). It really doesn't have to be that scary!
+They're basically the same, except for the team abbreviation and season at the end - easy for-loop material! 
+
+If you're not familiar with R base utilities, I use both directory methods *dir.exist* and *dir.create* to first check whether a folder already exists on my local laptop (dir=directory=folder) before creating it, and then use *download.file* to download the html file to a folder on my laptop (destfile). I share all of my code below so that you can do this with your own project. It really doesn't have to be that scary!
 
 ```{css, echo=FALSE}
 pre {
@@ -189,9 +199,20 @@ for (year in seasons) {
 } # end looping through all seasons
 ```
 
-You'll notice a sequence of if-statements in the code above that's accounting for team name changes. Well, something cool I learnt during the downloading process is that Jay-Z is a minority owner of the Brooklyn Nets (BKN) and that they used to play in New Jersey under the name The New Jersey Nets (NJN). I don't know why, but I feel much cooler for knowing this. Alright, now that downloading is complete, onto extracting the data - or "scraping"!
+You'll notice a sequence of if-statements in the code above that's accounting for team name changes. Well, something cool I learnt during the downloading process is that Jay-Z is a minority owner of the Brooklyn Nets (BKN), and that they used to play in New Jersey under the name The New Jersey Nets (NJN). I don't know why, but I feel much cooler for knowing this. 
 
-Personally, scraping an HTML file or a webpage directly can be overwhelming at first because of the sheer amount of lines involved, but it helps to understand the structure of HTML. I found [this](https://www.w3schools.com/html/html_intro.asp) resource especially helpful. There is a menu bar on the left side that lists all of the possible components of an HTML file, like how to create and store information in an HTML table. For my project I need to scrape the Roster table for player names and experience, the Misc table for team wins and losses, the Totals table for total points scored, and last but not least the Salaries table for each team's total salary. Since I know the exact tables, I can parse through the HTML file and find the id of the node containing my needed tables. Here's a picture showing the table node for the Roster table if you're interested:
+Alright, now that downloading is complete, onto extracting the data - or "scraping"!
+
+Personally, scraping an HTML file or a webpage directly can be overwhelming at first because of the sheer amount of lines of code involved. The only way to be comfortable with this process is to understand the HTML structure. I found [this](https://www.w3schools.com/html/html_intro.asp) resource especially helpful. There is a menu bar on the left side that lists all of the possible components of an HTML file, like how to create and store information in an HTML table. 
+
+For my project I need to scrape the following tables:
+
+- Roster table to get player names and their experience 
+- Misc table for team wins and losses
+- Totals table for total points scored
+- Salaries table for each team's total salary. 
+
+Since I know the exact tables, I can parse through the HTML file and find the id of the node containing my tables. Here's a picture showing the table node for the Roster table if you're interested:
 
 ```{r roster_html_example, echo=FALSE, fig.align='center', fig.cap="Figure 2 - Roster table for Toronto in html format", out.width = '50%', out.height='50%'}
 knitr::include_graphics("roster_html_example.png")
@@ -199,17 +220,17 @@ knitr::include_graphics("roster_html_example.png")
 
 There are a couple different libraries in R that you can use to scrape through an html file. I use the XML library so that I can access the *readHTMLtable* function. Read the documentation for this method [here](https://cran.r-project.org/web/packages/XML/XML.pdf) - use the menu on the left to scroll to readHTMLtable. This function enables me to extract table data from the html files and store it into a dataframe. Once we have a dataframe, it's easy to save the data as a csv file for future analysis. 
 
-Since this part in a data science project tends to be the overwhleming part (even for me, but it gets better with practice, I promise!) I want to walk through my lines of code that deal with scraping tables. I use "pseudocode" to explain, which is basically a series of statements explaning what the code is doing. Starting at the for-loop iterating over each team in a given season:
+Since this part in a data science project tends to be the overwhleming part (even for me, but it gets better with practice, I promise!) I want to walk through my lines of code that deal with scraping tables. Starting at the for-loop iterating over each team in a given season:
 
 - read the html document into a character vector using *readLines*, with each line in the file being its own element in the vector
 - grab the line number (or index) in the character vector that contains the string 'id = "*insert_table_name*"' using R's *grep* function - this will indicate where to start reading in the table
 - initialize a separate variable (line_counter) to keep track of how many lines the table has
 - find the line number (or index) where the table ends by looping through the html document (keeping track of lines with line_counter) until we reach the string "</table>" which signals the end of an HTML table
 - now that we have the starting index (begin_table) and the ending index (line_counter), read these exact lines from the html file using XML's *readHTMLtable* into a datafrmae
-- create a folder name where we can save the data in the dataframe
+- create a folder name where we can save the data from the dataframe
 - save dataframe as a csv file in designated folder
 
-Hopefully the pseudocode above, along with the heavily documented code below, will help you in understanding how to perform the same process for your own project. The more you do it, the less scary it becomes!
+Hopefully the quick line-by-line explanation above, along with the heavily documented code below, will help you in understanding how to perform the same process for your own project. The more you do it, the less scary it becomes!
 
 ```{r, eval=FALSE}
 #load our needed library
@@ -336,11 +357,11 @@ Now that I have all my data (yay!), I can start merging the columns I need from 
 
 ###### Data Cleaning
 
-This is the last part of the data prep stage, and usually the least enjoyable for most. This is where I will need to merge relevent columns from all of my tables and make some changes to the data so that I can use them for plotting later. 
+This is the last part of the data prep stage, and usually the least enjoyable for most. This is where I will need to merge relevent columns from all of my tables and make some changes to the data so that I can generate plots later.
 
-I actually enjoy this part because it feels like a fun puzzle - I know what the outcome must be (e.g. tables merged, dates cleaned, names changed to lowercase, convert datatype, etc) and it's a creative process to get there. I'm lucky (or maybe unlucky?) in that there isn't much actual data cleaning to do here, so you'll see that I make the necessary changes (cleaning) when I merge features from different tables into one final, clean detaframe.
+I actually enjoy this part of the lifecycle because it feels like a fun puzzle - I know what the outcome must be (e.g. tables merged, dates cleaned, names changed to lowercase, convert datatype, etc) and it's a creative process to get there. I'm lucky (or maybe unlucky?) in that there isn't much actual data cleaning to do here, so you'll see that I make the necessary changes (cleaning) when I merge features from different tables into one final, clean detaframe.
 
-To make this whole process seamless under one big code chunk, I always first test out what I want to do with each table (grab column and clean data in column) using just one team as a simpler case, and then generalize up from there. I find that breaking up a task where I'll need to iterate over a list/vector of objects (team, seasons, etc) helps with the debugging process and I'm better able to see how to generalize my code (similar to what we did in figuring out the pattern in team URLs earlier). I'll show you what I mean by starting with the Roster table. Below are the columns in the roster table:
+To make this whole process seamless under one big code chunk, I always first test out what I want to do with each table (grab column and clean data in column) using just one team as a simpler case, and then generalize up from there to all teams. I find that breaking up a task where I'll eventually need to iterate through a large list/vector of objects (team, seasons, etc) helps with the debugging process. I'm also better able to visualize how to generalize my code (similar to what we did in figuring out the pattern in team URLs earlier). I'll show you what I mean by starting with the Roster table. Below are the columns in the roster table:
 
 ```{r, echo=FALSE}
 print(c('index', 'No.', 'Player', 'Position', 'Height', 'Weight', 
@@ -360,11 +381,11 @@ read.csv('../data/rawdata/roster/2010/ATL-2010-roster.csv',
                   col.names=col_names)$Experience
 ```
 
-Notice that the entries are all characters (strings) and a rookie player with "zero" experience is coded as 'R' for Rookie. I want to sum up team experience, so I'll have to convert each entry to a numeric value using R's *as.numeric* function, but first I'll have to replace the "R" with "0". Doing this is actually quite easy. 
+Notice the entries are all characters (strings) and a rookie player with "zero" experience is coded as 'R' for Rookie. I want to sum up team experience, so I'll have to convert each entry to a numeric value using R's *as.numeric* function, but first I'll have to replace the "R" with "0". Doing this is actually quite easy. 
 
-There are a couple ways to manipulate strings in R but I like to work with the stringr library. The functions in stringr are easy to remember and are named really appropriately. Since I want to do a replacement of 'R' with '0', I use stringr's *str_replace_all* function. Once this change has been made, we can then convert all entries to a numeric data type instead of a string.
+There are a couple ways to manipulate strings in R but I like to work with the stringr library. The functions in stringr are easy to remember because they are named really appropriately. Since I want to do a replacement of 'R' with '0', I use stringr's *str_replace_all* function. Once this change has been made, we can then convert all entries to a numeric data type instead of a string.
 
-You'll notice in my code below that after grabbing the experience column and cleaning it, I save it into a larger vector that will eventually hold every team's summed experience for when I generalize. Note that I also import the dplyr library so that I can use some of its dataframe manipulation functions, like *select*.
+You'll notice in my code below that after grabbing the experience column and cleaning it, I save it into a larger vector that will eventually hold every team's summed experience for when I generalize up. Note that I also import the dplyr library so that I can use some of its dataframe manipulation functions, like *select*.
 
 ```{r, eval=FALSE}
 # we'll need both the dplyr and strinr libraries (stringr for cleaning strings:))
@@ -411,7 +432,9 @@ num_players <- c(num_players, nrow(roster))
 
 Sweet, we are done working with a simple case on the Roster table! 
 
-To provide more guidance, I'll walk you through how I grabbed team salaries from the Salaries table, and then quickly show you the code for the last two tables. Here are the columns from the Salaries table:
+To provide more guidance, I'll walk you through how I grabbed team salaries from the Salaries table, and then quickly show you the code for the last two tables. 
+
+Here are the columns from the Salaries table:
 
 ```{r, echo=FALSE}
 print(c('Index', 'Rank','Player', 'Salary'))
@@ -426,7 +449,7 @@ read.csv('../data/rawdata/salary/2010/ATL-2010-salaries.csv',
                   col.names=sal_col_names)$Salary
 ```
 
-We are again dealing with numbers that should be a numeric datatype, but they've been stored as strings with special characters ($ and ,). Stringr has another handy dandy function called *str_remove_all* that lets you pick a pattern to be removed from a string. I used a regex pattern for this so that I can eliminate both the dollar sign and the comma in one go (see code for regex pattern). Once the special characters are removed I can again use R's *as.numeric* to convert to a numeric datatype. Check out my code for this below.
+We are again dealing with numbers that should be numeric datatypes, but they've been stored as strings with special characters ($ and ,). Stringr has another handy dandy function called *str_remove_all* that lets you pick a pattern to be removed from a string. I used a regex pattern for this so that I can eliminate both the dollar sign and the comma in one go (see code for regex pattern). Once the special characters are removed I can again use R's *as.numeric* to convert to a numeric datatype. Check out my code for this below.
 
 ```{r, eval=FALSE}
 #set column names
